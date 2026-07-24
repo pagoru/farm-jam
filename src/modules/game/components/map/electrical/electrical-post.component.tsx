@@ -17,8 +17,8 @@ export const ElectricalPostComponent: React.FC<Props> = ({
   const entityProps = useEntity({ position });
 
   useEffect(() => {
-    for (let x = 0; x < 2; x++) {
-      for (let y = 0; y < 2; y++) {
+    for (let x = -2; x < 2; x++) {
+      for (let y = -2; y < 2; y++) {
         setBlockedPositions({ x: 0, y: 0, ...position });
       }
     }
