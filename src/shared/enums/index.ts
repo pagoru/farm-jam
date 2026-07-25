@@ -5,3 +5,4 @@ export * from "./character.enum";
 export * from "./tree.enum";
 export * from "./direction.enum";
 export * from "./wall.enum";
+export * from "./colors.enum";
