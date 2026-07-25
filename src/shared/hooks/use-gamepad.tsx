@@ -3,10 +3,12 @@ import { useEvents } from "@openhotel/pixi-components";
 import { CustomEvent } from "shared/enums";
 
 type State = {
-  getGamepad: (id: string) => Gamepad | null;
+  getGamepad: (id: string) => Gamepad | null | undefined;
 };
 
-const GamepadContext = React.createContext<State>(undefined);
+const GamepadContext = React.createContext<State>({
+  getGamepad: () => null,
+});
 
 type GamepadProps = {} & React.PropsWithChildren;
 
@@ -15,7 +17,7 @@ export const GamepadProvider: React.FunctionComponent<GamepadProps> = ({
 }) => {
   const { emit } = useEvents();
 
-  const gamepadsRef = useRef<Gamepad[]>([]);
+  const gamepadsRef = useRef<(Gamepad | null)[]>([]);
 
   const onGamepadConnected = useCallback((event: GamepadEvent) => {
     console.log(`Gamepad connected!`);
@@ -37,7 +39,7 @@ export const GamepadProvider: React.FunctionComponent<GamepadProps> = ({
     emit(CustomEvent.GAMEPAD_DISCONNECTED, event.gamepad);
 
     gamepadsRef.current = gamepadsRef.current.map(($gamepad) =>
-      event.gamepad.id === $gamepad.id ? null : $gamepad,
+      event.gamepad.id === $gamepad?.id ? null : $gamepad,
     );
     if (
       gamepadsRef.current.filter(($gamepad) => $gamepad !== null).length === 0
@@ -56,7 +58,7 @@ export const GamepadProvider: React.FunctionComponent<GamepadProps> = ({
   }, [onGamepadConnected, onGamepadDisconnected]);
 
   const getGamepad = useCallback(
-    (id: string) => gamepadsRef.current.find((gamepad) => gamepad.id === id),
+    (id: string) => gamepadsRef.current.find((gamepad) => gamepad?.id === id),
     [],
   );
 

@@ -5,11 +5,15 @@ type State = {
   navigate: (route: string) => void;
 };
 
-const RouterContext = React.createContext<State>(undefined);
+const RouterContext = React.createContext<State>({
+  navigate: () => {},
+});
 
-type ProviderProps = {};
+type ProviderProps = {} & React.PropsWithChildren;
 
-export const RouterProvider: React.FunctionComponent<ProviderProps> = () => {
+export const RouterProvider: React.FunctionComponent<ProviderProps> = ({
+  children,
+}) => {
   const [RouteComponent, setRouteComponent] = useState<React.FC>(
     () => DEFAULT_ROUTE,
   );
@@ -29,7 +33,12 @@ export const RouterProvider: React.FunctionComponent<ProviderProps> = () => {
       value={{
         navigate,
       }}
-      children={<RouteComponent />}
+      children={
+        <>
+          <RouteComponent />
+          {children}
+        </>
+      }
     />
   );
 };
