@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { ApplicationProvider } from "@openhotel/pixi-components";
+import { Color } from "shared/enums";
 
 export const AppComponent: React.FC<React.PropsWithChildren> = ({
   children,
@@ -7,7 +8,7 @@ export const AppComponent: React.FC<React.PropsWithChildren> = ({
   return useMemo(
     () => (
       <ApplicationProvider
-        backgroundColor={0xff00ff}
+        backgroundColor={Color.BACKGROUND_PURPLE}
         backgroundAlpha={1}
         scale={3}
         children={children}

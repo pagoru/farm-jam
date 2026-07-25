@@ -10,7 +10,10 @@ export const InitialLoaderComponent: React.FC<Props> = ({ children }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
-    Promise.all([loadSpriteSheet(SpriteSheetEnum.FONT)]).then(() => {
+    Promise.all([
+      loadSpriteSheet(SpriteSheetEnum.FONT),
+      loadSpriteSheet(SpriteSheetEnum.LOADING_0),
+    ]).then(() => {
       setIsLoaded(true);
     });
   }, [loadSpriteSheet, setIsLoaded]);
