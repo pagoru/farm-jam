@@ -96,7 +96,7 @@ export const PlayerComponent: React.FC<Props> = ({}) => {
       }
     });
 
-    const consumedDelta = 60;
+    const consumedDelta = 40;
     let accDelta = 0;
 
     const onRemoveCustomTicker = add({
