@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { CatenaryCable, ElectricalPostComponent } from "shared/components";
+import { CatenaryCable, ElectricalPostComponent } from "./";
 import { Point } from "@openhotel/pixi-components";
 import { CrossDirection } from "shared/enums";
 

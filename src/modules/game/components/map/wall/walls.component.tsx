@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Point } from "@openhotel/pixi-components";
 import { Direction, WallType } from "shared/enums";
-import { WallComponent } from "shared/components";
+import { WallComponent } from "./";
 
 type Wall = {
   direction: Direction;

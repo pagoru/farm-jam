@@ -6,7 +6,7 @@ import {
   TreeComponent,
   WallsComponent,
   WeedsComponent,
-} from "shared/components";
+} from "./";
 import { getNoise, getRandomNumber } from "shared/utils";
 import { CrossDirection, Direction, TreeType, WallType } from "shared/enums";
 
@@ -37,6 +37,11 @@ export const MapComponent: React.FC = () => {
 
     for (let j = -size; j < size; j++) {
       for (let k = -size; k < size; k++) {
+        if (j === 3 && k === 3) continue;
+        if (j === 4 && k === 3) continue;
+        if (j === 4 && k === 4) continue;
+        if (j === 3 && k === 4) continue;
+
         const temp = getTempNoise(k / scale, j / scale);
         const moist = getMoistNoise(k / scale, j / scale);
 
@@ -122,6 +127,9 @@ export const MapComponent: React.FC = () => {
   const renderWalls = useMemo(
     () => (
       <WallsComponent
+        position={{
+          x: 10,
+        }}
         walls={[
           {
             direction: Direction.WEST,

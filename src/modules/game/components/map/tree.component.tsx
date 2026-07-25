@@ -14,6 +14,7 @@ import {
   TREE_SPRITE_PIVOT_MAP,
 } from "shared/consts";
 import { useEntity } from "shared/hooks";
+import { useMap } from "modules/game";
 
 type Props = {
   position?: Partial<Point>;
@@ -24,6 +25,7 @@ export const TreeComponent: React.FC<Props> = ({
   position = { x: 0, y: 0 },
   type = TreeType.BIG,
 }) => {
+  const { setBlockedPositions } = useMap();
   const { on } = useEvents();
   const entityProps = useEntity({ position });
 
@@ -33,6 +35,14 @@ export const TreeComponent: React.FC<Props> = ({
   const texture = useMemo(() => TREE_SPRITE_MAP[type], [type]);
   const pivot = useMemo(() => TREE_SPRITE_PIVOT_MAP[type], [type]);
   const maskData = useMemo(() => TREE_MASK_MAP[type], [type]);
+
+  useEffect(() => {
+    for (let x = -2; x < 2; x++) {
+      for (let y = -2; y < 2; y++) {
+        setBlockedPositions({ x: 0, y: 0, ...position });
+      }
+    }
+  }, [setBlockedPositions, position]);
 
   useEffect(() => {
     const onRemoveSwayAnimationEvent = on<{ time: number }>(

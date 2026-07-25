@@ -1,20 +1,30 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { CharacterComponent } from "shared/components";
-import { Event, Point, useEvents } from "@openhotel/pixi-components";
+import {
+  ContainerRef,
+  Event,
+  Point,
+  useEvents,
+} from "@openhotel/pixi-components";
 import { useTicker } from "shared/hooks";
 import { TickerQueue } from "@oh/queue";
 import { CharacterAnimation, CustomEvent } from "shared/enums";
-import { usePlayer } from "modules/game";
+import { useMap, usePlayer } from "modules/game";
 import { AXES_DEAD_ZONE } from "shared/consts";
+import {
+  getPositionFromIsometricPosition,
+  getZIndexFromIsometricPosition,
+} from "shared/utils";
 
-type Props = {
-  onChangePosition?: (position: Point) => void;
-};
+type Props = {};
 
-export const PlayerComponent: React.FC<Props> = ({ onChangePosition }) => {
+export const PlayerComponent: React.FC<Props> = ({}) => {
   const { on } = useEvents();
   const { add } = useTicker();
-  const { position, setPosition } = usePlayer();
+  const { canWalk } = useMap();
+  const { setPosition, getPosition } = usePlayer();
+
+  const characterRef = useRef<ContainerRef | null>(null);
 
   const currentMoveKeyCode = useRef<string[]>([]);
   const currentGamepad = useRef<Gamepad>(null);
@@ -29,14 +39,22 @@ export const PlayerComponent: React.FC<Props> = ({ onChangePosition }) => {
       onPosition: (pos: Point) => Partial<Point>,
       direction: "right" | "left",
     ) => {
-      setPosition(($position) => {
-        const $point = { ...$position, ...onPosition($position) };
-        onChangePosition?.($point);
-        return $point;
-      });
       setDirection(direction);
+      const $position = getPosition();
+
+      const $point = { ...$position, ...onPosition($position) };
+      if (!canWalk($point)) return;
+
+      const playerComponent = characterRef.current?.component;
+      if (!playerComponent) return;
+
+      const absolutePosition = getPositionFromIsometricPosition($point);
+
+      playerComponent!.position.copyFrom(absolutePosition);
+      playerComponent!.zIndex = getZIndexFromIsometricPosition($point);
+      setPosition($point);
     },
-    [onChangePosition, setPosition, setDirection],
+    [setPosition, setDirection, canWalk, getPosition],
   );
 
   useEffect(() => {
@@ -71,7 +89,7 @@ export const PlayerComponent: React.FC<Props> = ({ onChangePosition }) => {
         currentMoveKeyCode.current = currentMoveKeyCode.current.filter(
           (keyCode) => code !== keyCode,
         );
-        setPosition((position) => ({ ...position, _update: Date.now() }));
+        setPosition(getPosition());
       }
       if (code === "KeyJ") {
         currentActionKeyCodeActive.current = false;
@@ -168,15 +186,24 @@ export const PlayerComponent: React.FC<Props> = ({ onChangePosition }) => {
       removeOnGamepadDisconnected();
       onRemoveCustomTicker();
     };
-  }, [on, add, $setPosition, setDirection, setMovement, setAction]);
+  }, [
+    on,
+    add,
+    $setPosition,
+    setPosition,
+    getPosition,
+    setDirection,
+    setMovement,
+    setAction,
+  ]);
 
   return (
     <CharacterComponent
+      ref={characterRef}
       direction={direction}
       animation={
         action || (movement ? CharacterAnimation.WALK : CharacterAnimation.IDLE)
       }
-      position={position}
     />
   );
 };

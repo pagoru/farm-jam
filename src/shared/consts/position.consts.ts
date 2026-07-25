@@ -1,0 +1,1 @@
+export const MAX_INDEX_POSITION_CONSTANT = 2 ** 32;

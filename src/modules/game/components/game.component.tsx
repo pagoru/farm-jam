@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import {
   CameraProvider,
-  GameProvider,
+  MapProvider,
   GuiComponent,
   PlayerProvider,
   PlayerComponent,
@@ -17,7 +17,7 @@ export const GameComponent: React.FC = () => {
       (props: React.PropsWithChildren) => (
         <CameraProvider guiChildren={<GuiComponent />} {...props} />
       ),
-      GameProvider,
+      MapProvider,
       PlayerProvider,
       BackgroundAnimationProvider,
     ],
